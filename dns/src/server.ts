@@ -20,22 +20,22 @@ for (const variable in process.env) {
 	}
 }
 
-if (!addressMap['conntest.nintendowifi.net']) {
+if (!addressMap['CONNTEST_NINTENDOWIFI_NET']) {
 	if (!process.env.SSSL_DNS_DEFAULT_ADDRESS) {
-		console.log(colors.bgRed('Mapping for conntest.nintendowifi.net not found and no default address set. Set either SSSL_DNS_DEFAULT_ADDRESS or SSSL_DNS_MAP_conntest.nintendowifi.net'));
+		console.log(colors.bgRed('Mapping for conntest.nintendowifi.net not found and no default address set. Set either SSSL_DNS_DEFAULT_ADDRESS or SSSL_DNS_MAP_CONNTEST_NINTENDOWIFI_NET'));
 		process.exit();
 	}
 
-	addressMap['conntest.nintendowifi.net'] = process.env.SSSL_DNS_DEFAULT_ADDRESS;
+	addressMap['CONNTEST_NINTENDOWIFI_NET'] = process.env.SSSL_DNS_DEFAULT_ADDRESS;
 }
 
-if (!addressMap['account.nintendo.net']) {
+if (!addressMap['ACCOUNT_NINTENDO_NET']) {
 	if (!process.env.SSSL_DNS_DEFAULT_ADDRESS) {
-		console.log(colors.bgRed('Mapping for account.nintendo.net not found and no default address set. Set either SSSL_DNS_DEFAULT_ADDRESS or SSSL_DNS_MAP_account.nintendo.net'));
+		console.log(colors.bgRed('Mapping for account.nintendo.net not found and no default address set. Set either SSSL_DNS_DEFAULT_ADDRESS or SSSL_DNS_MAP_ACCOUNT_NINTENDO_NET'));
 		process.exit();
 	}
 
-	addressMap['account.nintendo.net'] = process.env.SSSL_DNS_DEFAULT_ADDRESS;
+	addressMap['ACCOUNT_NINTENDO_NET'] = process.env.SSSL_DNS_DEFAULT_ADDRESS;
 }
 
 let udpPort = 0;
@@ -77,6 +77,8 @@ if (tcpPort === 0) {
 	console.log(colors.bgYellow('TCP port not set. One will be randomly assigned'));
 }
 
+const unsafeEnvRegex = /[^A-Z0-9_]/g;
+
 const server = createServer({
 	udp: true,
 	tcp: true,
@@ -84,7 +86,9 @@ const server = createServer({
 		const [ question ] = request.questions;
 		const { name } = question;
 
-		if (addressMap[name]) {
+		let mapName = name.toUpperCase().replace(unsafeEnvRegex, '_');
+
+		if (addressMap[mapName]) {
 			const response = Packet.createResponseFromRequest(request);
 
 			response.answers.push({
@@ -92,7 +96,7 @@ const server = createServer({
 				type: Packet.TYPE.A,
 				class: Packet.CLASS.IN,
 				ttl: 300,
-				address: addressMap[name]
+				address: addressMap[mapName]
 			});
 
 			send(response);

@@ -11,7 +11,7 @@ The only 2 addresses required are for `conntest.nintendowifi.net` and `account.n
 | `SSSL_UDP_PORT`            | UDP port for the DNS server.                                                           | Only if not using TCP.                 |
 | `SSSL_TCP_PORT`            | TPC port for the DNS server.                                                           | Only if not using UDP.                 |
 | `SSSL_DNS_DEFAULT_ADDRESS` | The default address to use for `conntest.nintendowifi.net` and `account.nintendo.net`. | Only if not explicitly mapped.         |
-| `SSSL_DNS_MAP_hostname`    | An explicit mapping of a hostname to an address.                                       | Only if not using the default address. |
+| `SSSL_DNS_MAP_HOSTNAME`    | An explicit mapping of a hostname to an address.                                       | Only if not using the default address. |
 
 These environment variables can be set manually or loaded from a `.env` file. See [example.env](./example.env) for an example configuration.
 
